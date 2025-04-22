@@ -75,12 +75,8 @@ export default function Register() {
         throw new Error(data.message || 'Registration failed');
       }
       
-      // Save token and user data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect to verification page
+      router.push(`/auth/verify?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
       const error = err as ErrorWithMessage;
       setError(error.message || 'An error occurred');

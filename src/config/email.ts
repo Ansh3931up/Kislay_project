@@ -1,57 +1,54 @@
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Load environment variables from .env file
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+import config from './config';
+import { EmailConfig } from '../types/email';
 
 // Type definitions
-interface EmailAuth {
-    user: string;
-    pass: string;
-}
-
-interface EmailConfig {
-    host: string;
-    port: number;
-    secure: boolean;
-    auth: EmailAuth;
+interface EmailServiceConfig {
+    service: string;
+    auth: {
+        user: string;
+        pass: string;
+    };
+    debug: boolean;
     tls: {
         rejectUnauthorized: boolean;
     };
-    senderName: string;
-    from: string;
 }
 
-// Email configuration with type safety
-const emailConfig: EmailConfig = {
-    // Use existing EMAIL_* variables from .env.local
-    host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
-    port: parseInt(process.env.EMAIL_PORT || '587', 10),
-    secure: process.env.EMAIL_SECURE === 'true',
+// Email service configuration
+export const emailConfig: EmailServiceConfig = {
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USERNAME || 'thebeliever39@gmail.com',
-        pass: process.env.EMAIL_PASSWORD || 'your-password'
+        user: config.email.auth.user,
+        pass: config.email.auth.pass
     },
+    debug: process.env.NODE_ENV !== 'production',
     tls: {
         rejectUnauthorized: false
-    },
-    senderName: 'Authentication System',
-    from: process.env.EMAIL_FROM || 'thebeliever39@gmail.com'
+    }
 };
 
-// Log configuration (but not in production)
-if (process.env.NODE_ENV !== 'production') {
-    console.log('Email Configuration:', {
-        host: emailConfig.host,
-        port: emailConfig.port,
-        secure: emailConfig.secure,
-        auth: {
+// Validate email configuration
+const validateEmailConfig = (config: EmailServiceConfig): void => {
+    if (!config.auth.user || !config.auth.pass) {
+        throw new Error('Email configuration is missing required credentials');
+    }
+};
+
+// Test and validate configuration
+try {
+    validateEmailConfig(emailConfig);
+    
+    // Log configuration (but not in production)
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('Email Service Configuration:', {
+            service: emailConfig.service,
             user: emailConfig.auth.user,
-            password: '****'
-        },
-        from: emailConfig.from,
-        senderName: emailConfig.senderName
-    });
+            debug: emailConfig.debug
+        });
+    }
+} catch (error) {
+    console.error('Email Configuration Error:', error);
+    process.exit(1);
 }
 
 export default emailConfig; 

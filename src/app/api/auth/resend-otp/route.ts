@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/User';
 import dbConnect from '@/lib/mongoose';
 import { generateOTP } from '@/lib/tokens';
-import { sendVerificationEmail, sendPasswordResetEmail } from '@/lib/api/auth';
+import { sendEmail } from '@/lib/sendEmail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +36,11 @@ export async function POST(request: NextRequest) {
       await user.save();
       
       // Send verification email using enhanced function
-      const emailSent = await sendVerificationEmail(user.email, otp, user.name);
+      const emailSent = await sendEmail({
+        to: user.email,
+        subject: 'Verification Code',
+        html: `Your verification code is ${otp}`
+      });
       
       if (!emailSent) {
         console.error(`Failed to send verification email to ${email}`);
@@ -52,7 +56,11 @@ export async function POST(request: NextRequest) {
       await user.save();
       
       // Send reset password email using enhanced function
-      const emailSent = await sendPasswordResetEmail(user.email, otp);
+      const emailSent = await sendEmail({
+        to: user.email,
+        subject: 'Reset Password Code',
+        html: `Your reset password code is ${otp}`
+      });
       
       if (!emailSent) {
         console.error(`Failed to send reset password email to ${email}`);

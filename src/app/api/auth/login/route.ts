@@ -27,6 +27,14 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    // Check if user is verified
+    if (!user.isVerified) {
+      return NextResponse.json(
+        { success: false, message: 'Please verify your email first' },
+        { status: 403 }
+      );
+    }
+    
     // Check if password matches
     const isMatch = await user.matchPassword(password);
     
