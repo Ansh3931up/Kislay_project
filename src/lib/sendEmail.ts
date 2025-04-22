@@ -14,7 +14,7 @@ interface EmailOptions {
 
 interface Recipient {
     email: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface VerificationEmailParams {
@@ -138,7 +138,7 @@ export const sendBatchEmails = async (
     recipients: Recipient[],
     subject: string,
     template: string,
-    dataMapper: (recipient: Recipient) => Record<string, any>
+    dataMapper: (recipient: Recipient) => Record<string, unknown>
 ): Promise<PromiseSettledResult<nodemailer.SentMessageInfo>[]> => {
     try {
         const promises = recipients.map(recipient => {
@@ -148,6 +148,7 @@ export const sendBatchEmails = async (
                 subject,
                 html: template
             });
+            console.log(data);
         });
         
         const results = await Promise.allSettled(promises);
@@ -283,7 +284,7 @@ export const sendInvitationEmail = async ({ email, name, department, college, in
 initializeTransporter().catch(console.error);
 
 
-export const getEmailTemplate = (templateName: string, data: Record<string, any>): string => {
+export const getEmailTemplate = (templateName: string, data: Record<string, unknown>): string => {
     const templatePath = path.join(process.cwd(), 'src/templates', templateName);
     const template = fs.readFileSync(templatePath, 'utf-8');
     const compiledTemplate = Handlebars.compile(template);

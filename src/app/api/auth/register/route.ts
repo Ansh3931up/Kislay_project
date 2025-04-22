@@ -87,6 +87,7 @@ export async function POST(request: NextRequest) {
       verificationToken: otp,
       verificationExpire,
     });
+    console.log(user);
     
     const emailSent = await sendEmail({
       to: email,
