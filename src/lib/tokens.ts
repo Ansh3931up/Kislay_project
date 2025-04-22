@@ -28,17 +28,22 @@ export const generateResetToken = () => {
 
 // Generate JWT token
 export const generateJWT = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'mysecretkey123', {
-    expiresIn: process.env.JWT_EXPIRE || '7d',
-  });
+  const secret = process.env.JWT_SECRET || 'mysecretkey123';
+  return jwt.sign(
+    { id },
+    secret as string,
+    { expiresIn: process.env.JWT_EXPIRE || '7d' }
+  );
 };
 
 // Verify JWT token
 export const verifyJWT = (token: string) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'mysecretkey123');
+    const secret = process.env.JWT_SECRET || 'mysecretkey123';
+    const decoded = jwt.verify(token, secret as string);
     return decoded;
   } catch (error) {
+    console.error('Error verifying JWT token:', error);
     return null;
   }
 }; 

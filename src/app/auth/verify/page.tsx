@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -8,7 +8,7 @@ interface ErrorWithMessage extends Error {
   message: string;
 }
 
-export default function Verify() {
+function VerifyForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
@@ -168,5 +168,30 @@ export default function Verify() {
         </form>
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function VerifyLoading() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-24 bg-gray-900 text-white">
+      <div className="w-full max-w-md bg-gray-800 p-8 rounded-lg shadow-lg border border-gray-700">
+        <div className="flex justify-center mb-6">
+          <div className="animate-pulse w-16 h-16 rounded-full bg-indigo-600/20"></div>
+        </div>
+        <h1 className="text-3xl font-bold mb-2 text-center text-white">Loading...</h1>
+        <div className="animate-pulse mt-6 h-8 bg-gray-700 rounded"></div>
+        <div className="animate-pulse mt-4 h-12 bg-gray-700 rounded"></div>
+        <div className="animate-pulse mt-4 h-12 bg-indigo-600/40 rounded"></div>
+      </div>
+    </div>
+  );
+}
+
+export default function Verify() {
+  return (
+    <Suspense fallback={<VerifyLoading />}>
+      <VerifyForm />
+    </Suspense>
   );
 } 

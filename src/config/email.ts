@@ -1,5 +1,5 @@
 import config from './config';
-import { EmailConfig } from '../types/email';
+
 
 // Type definitions
 interface EmailServiceConfig {

@@ -1,5 +1,4 @@
-import sendEmail from '../sendEmail';
-import crypto from 'crypto';
+import { sendEmail } from '../sendEmail';
 
 /**
  * Generates a random 6-digit OTP
@@ -19,7 +18,7 @@ export const sendVerificationEmail = async (email: string, otp: string, name: st
     await sendEmail({
       to: email,
       subject: 'Email Verification Code',
-      text: `${greeting}
+      html: `${greeting}
 
 Your email verification code is: ${otp}
 
@@ -47,7 +46,7 @@ export const sendPasswordResetEmail = async (email: string, otp: string): Promis
     await sendEmail({
       to: email,
       subject: 'Password Reset Code',
-      text: `Hello,
+      html: `Hello,
 
 Your password reset code is: ${otp}
 
@@ -74,6 +73,7 @@ export const validateOTP = (otp: string): boolean => {
   return /^\d{6}$/.test(otp);
 };
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   generateOTP,
   sendVerificationEmail,

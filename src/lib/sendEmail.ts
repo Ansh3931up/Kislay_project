@@ -292,6 +292,7 @@ export const getEmailTemplate = (templateName: string, data: Record<string, unkn
 };
 
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     sendEmail,
     sendBatchEmails,
